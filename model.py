@@ -72,7 +72,7 @@ class Model(object):
 
             # Combine all the pooled features
             num_filters_total = num_filters * len(filter_sizes)
-            h_pool = tf.concat(3, pooled_outputs)
+            h_pool = tf.concat(pooled_outputs, 3)
             h_pool_flat = tf.reshape(h_pool, [-1, num_filters_total])
 
             # Add dropout
@@ -92,7 +92,7 @@ class Model(object):
                 scores = tf.nn.xw_plus_b(h_drop, W, b, name="scores")
                 predictions = tf.argmax(scores, 1, name="predictions")
 
-            losses = tf.nn.softmax_cross_entropy_with_logits(scores, self.input_y)
+            losses = tf.nn.softmax_cross_entropy_with_logits(logits=scores, labels=self.input_y)
             # TODO bring back l2 loss
             self.loss = tf.reduce_mean(losses) + 0.15 * l2_loss
 
